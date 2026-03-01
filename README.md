@@ -80,6 +80,3 @@ EduBot uses an `LLMSingleSelector` to automatically analyze your question and pi
 - **Embeddings**: Local BGE (BAAI/bge-small-en-v1.5)
 - **Database**: SQLite
 - **Technique**: RAPTOR (Recursive Tree Retrieval)
-
-## License
-MIT License - see the [LICENSE](LICENSE) file for details.
