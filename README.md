@@ -10,6 +10,17 @@ EduBot is an AI-powered personal teaching assistant designed to revolutionize th
 - **Contextual Problem Solving**: It solves the core problem of information fragmentation and impersonal learning by synthesizing diverse data sources into coherent, contextually accurate explanations that are tailored specifically to an individual student’s progress and programming proficiency.
 - **Industry-Leading USP**: The primary **Unique Selling Proposition (USP)** is the integration of high-speed Groq-powered inference with a 100% Google-independent, privacy-first local embedding system, delivering institutional-grade intelligence with unprecedented speed and data sovereignty.
 
+### List of features offered by the solution 🛠️
+- **Integrated High-Performance Inference**: Powered by **Groq Llama 3.3 70B**, offering sub-second response times for a smooth, natural chatting experience.
+- **Hierarchical Document Intelligence**: Uses the **RAPTOR** (Recursive Abstractive Processing for Tree-Organized Retrieval) technique to understand and summarize long, complex documents at multiple levels of abstraction.
+- **Privacy-Centric Local Embeddings**: Built-in support for **BAAI/bge-small-en-v1.5**, performing all vectorization on your local machine to eliminate external data processed by Google or OpenAI.
+- **Structured Academic Querying**: A specialized **SQL-RAG engine** that translates natural language into precise database queries for student records, grades, and schedules.
+- **Real-Time Knowledge Updates**: Dynamic **Web Scraping** integration to fetch and analyze the latest posts and news from academic portals.
+- **Intelligent Intent Agent**: An automated routing layer that decides whether to use documents, the database, or the web for each specific user question.
+- **Multi-Modal Support**: Capability to process and learn from diverse file types, including **PDFs, Text files, and PowerPoint (.pptx) presentations**.
+- **Personalized Adaptation**: Adapts the complexity and tone of answers based on the user's defined **Study Year** and **Programming Proficiency**.
+- **Global Accessibility**: Full project localization in **English**, covering all UI labels, help texts, and system prompts.
+
 ## Features 🌟
 
 - **Full English Localization**: All UI elements, AI prompts, and internal logic are now fully translated to English for global accessibility.
