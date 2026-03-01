@@ -8,7 +8,7 @@ from chatbot import render_chatbot
 from modules.sqlrag_module import get_tables 
 from settings import initialize_settings, save_prompt
 from modules.sqlrag_module import create_users_table, get_engine, upsert_user, get_user_by_email, create_pjs_points_table
-from openai_key import get_google_key
+from openai_key import get_google_key, get_groq_key
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -47,6 +47,7 @@ authenticator.check_authentification()
 if st.session_state['connected']:
     initialize_settings()
     get_google_key()
+    get_groq_key()
     
     #st.session_state["llm_selection"]["selected_model"]
     #st.session_state["llm_selection"]["selected_gpt"]
@@ -253,17 +254,25 @@ if st.session_state['connected']:
         if st.button('Logout'):
             authenticator.logout()
         container = st.sidebar.container(border=True)
-        
+
         with st.expander("Settings | Model Selection", expanded=False):
+            llm_options = ["Groq Llama 3.3 70B", "Groq Llama 3.1 8B", "Groq Mixtral 8x7B", "Gemini 2.0 Flash", "Gemini 2.5 Flash", "Gemini 2.5 Pro", "mistral:7b", "gemma:7b", "llama3:8b", "Claude 3 Opus", "Claude 3 Sonnet", "Claude 3 Haiku"]
             st.radio(
                 "Select the LLM you want to use to power EduBot🤖",
-                options=["Gemini 2.0 Flash", "Gemini 2.5 Flash", "Gemini 2.5 Pro", "mistral:7b", "gemma:7b", "llama3:8b", "Claude 3 Opus", "Claude 3 Sonnet", "Claude 3 Haiku"],
+                options=llm_options,
                 on_change=lambda: st.session_state["llm_selection"].update(
                     {"selected_model": st.session_state["temp_selected_model"]}
                 ),
-                help="",
                 key="temp_selected_model",
+                index=llm_options.index(st.session_state["llm_selection"]["selected_model"]) if st.session_state["llm_selection"]["selected_model"] in llm_options else 0
             )
+
+            if "Groq" in st.session_state["llm_selection"]["selected_model"]:
+                groq_key = st.text_input("Enter Groq API Key", type="password", value=st.session_state.get("groq_api_key", ""), placeholder="gsk_...")
+                if groq_key:
+                    st.session_state["groq_api_key"] = groq_key
+                    os.environ["GROQ_API_KEY"] = groq_key
+
             if "Gemini" in st.session_state["llm_selection"]["selected_model"]:
                 google_key = st.text_input("Google AI API Key", type="password", value=st.session_state["google_api_key"], help="Get your Gemini API key from Google AI Studio")
                 if google_key:

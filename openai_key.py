@@ -49,3 +49,20 @@ def get_google_key():
         os.environ['GOOGLE_API_KEY'] = st.session_state.google_api_key
         
     return st.session_state.google_api_key
+
+def get_groq_key():
+    if 'groq_api_key' not in st.session_state:
+        st.session_state.groq_api_key = ""
+        
+    # If session state is empty, try loading from .env
+    if not st.session_state.groq_api_key:
+        load_dotenv(override=True)
+        groq_api_key = os.getenv('GROQ_API_KEY')
+        if groq_api_key:
+            st.session_state.groq_api_key = groq_api_key.strip().strip("'").strip('"')
+    
+    # Always ensure the environment variable matches the sanitized session state
+    if st.session_state.groq_api_key:
+        os.environ['GROQ_API_KEY'] = st.session_state.groq_api_key
+        
+    return st.session_state.groq_api_key

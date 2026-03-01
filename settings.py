@@ -4,8 +4,9 @@ from llama_index.llms.openai import OpenAI
 from llama_index.llms.ollama import Ollama
 from llama_index.llms.anthropic import Anthropic
 from llama_index.llms.gemini import Gemini
+from llama_index.llms.groq import Groq
 import os
-from openai_key import get_google_key
+from openai_key import get_google_key, get_groq_key
 
 def read_prompt_file(file_path):
     try:
@@ -31,7 +32,7 @@ DEFAULT_RAPTOR_QUERY_TOOL_DESCRIPTION = read_prompt_file("./prompts/default/DEFA
 DEFUALT_SQL_RAG_QUERY_TOOL_DESCRIPTION = read_prompt_file("./prompts/default/DEFAULT_SQL_RAG_QUERY_TOOL_DESCRIPTION.txt")
 DEFAULT_WEB_SCRAPER_QUERY_TOOL_DESCRIPTION = read_prompt_file("./prompts/default/DEFAULT_WEB_SCRAPER_QUERY_TOOL_DESCRIPTION.txt")
 
-DEFAULT_SELECTED_MODEL = "Gemini 2.0 Flash"
+DEFAULT_SELECTED_MODEL = "Groq Llama 3.3 70B"
 DEFAULT_SELECTED_GPT = "gpt-4o"
 DEFAULT_SELECTED_EMBEDDING_MODEL = "models/text-embedding-004"
 
@@ -89,8 +90,39 @@ def get_llm():
         initialize_settings()
         print("***Initialized settings!***")
     
-    # Use Gemini 2.0 Flash as the primary default
-    if st.session_state["llm_selection"]["selected_model"] == "Gemini 2.0 Flash":
+    # Groq Models
+    if st.session_state["llm_selection"]["selected_model"] == "Groq Llama 3.3 70B":
+        try:
+            return Groq(
+                model="llama-3.3-70b-versatile", 
+                api_key=get_groq_key()
+            )
+        except Exception as e:
+            print(f"Error initializing Groq Llama 3.3: {e}")
+            raise ValueError(f"Failed to initialize Groq Llama 3.3 70B: {e}")
+
+    elif st.session_state["llm_selection"]["selected_model"] == "Groq Llama 3.1 8B":
+        try:
+            return Groq(
+                model="llama-3.1-8b-instant", 
+                api_key=get_groq_key()
+            )
+        except Exception as e:
+            print(f"Error initializing Groq Llama 3.1: {e}")
+            raise ValueError(f"Failed to initialize Groq Llama 3.1 8B: {e}")
+            
+    elif st.session_state["llm_selection"]["selected_model"] == "Groq Mixtral 8x7B":
+        try:
+            return Groq(
+                model="mixtral-8x7b-32768", 
+                api_key=get_groq_key()
+            )
+        except Exception as e:
+            print(f"Error initializing Groq Mixtral: {e}")
+            raise ValueError(f"Failed to initialize Groq Mixtral 8x7B: {e}")
+
+    # Gemini Models
+    elif st.session_state["llm_selection"]["selected_model"] == "Gemini 2.0 Flash":
         try:
             return Gemini(
                 model="models/gemini-2.0-flash", 

@@ -8,6 +8,8 @@ from llama_index.llms.openai import OpenAI
 from llama_index.core import PromptTemplate
 from llama_index.llms.ollama import Ollama
 from llama_index.llms.anthropic import Anthropic
+from llama_index.llms.gemini import Gemini
+from llama_index.llms.groq import Groq
 
 from modules.sqlrag_module import SQLQueryEngine, get_create_table_statement, get_sql_template
 from modules.raptor_module import get_raptor
@@ -66,6 +68,10 @@ def render_chatbot():
                     sql_query_engine = SQLQueryEngine(prompt=sql_prompt, llm_ollama=llm_settings)
                 elif isinstance(llm_settings, Anthropic):
                     sql_query_engine = SQLQueryEngine(prompt=sql_prompt, llm_anthropic=llm_settings)
+                elif isinstance(llm_settings, Gemini):
+                    sql_query_engine = SQLQueryEngine(prompt=sql_prompt, llm_gemini=llm_settings)
+                elif isinstance(llm_settings, Groq):
+                    sql_query_engine = SQLQueryEngine(prompt=sql_prompt, llm_groq=llm_settings)
                 else:
                     raise ValueError("Unsupported LLM type")
 
@@ -81,6 +87,10 @@ def render_chatbot():
                 web_scraper_engine = WebScraperQueryEngine(llm_ollama=llm_settings)
             elif isinstance(llm_settings, Anthropic):
                 web_scraper_engine = WebScraperQueryEngine(llm_anthropic=llm_settings)
+            elif isinstance(llm_settings, Gemini):
+                web_scraper_engine = WebScraperQueryEngine(llm_gemini=llm_settings)
+            elif isinstance(llm_settings, Groq):
+                web_scraper_engine = WebScraperQueryEngine(llm_groq=llm_settings)
             else:
                 raise ValueError("Unsupported LLM type")
 

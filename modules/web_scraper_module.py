@@ -6,6 +6,8 @@ from llama_index.core.query_engine import CustomQueryEngine
 from llama_index.llms.ollama import Ollama
 from llama_index.llms.anthropic import Anthropic
 from llama_index.llms.openai import OpenAI
+from llama_index.llms.gemini import Gemini
+from llama_index.llms.groq import Groq
 
 class WebScraperQueryEngine(CustomQueryEngine):
     """Custom query engine for web scraping."""
@@ -13,6 +15,8 @@ class WebScraperQueryEngine(CustomQueryEngine):
     llm_openai: OpenAI | None = None
     llm_ollama: Ollama | None = None
     llm_anthropic: Anthropic | None = None
+    llm_gemini: Gemini | None = None
+    llm_groq: Groq | None = None
 
     # web scraper
     def fetch_articles(self):
@@ -68,6 +72,10 @@ class WebScraperQueryEngine(CustomQueryEngine):
             llm = self.llm_ollama
         elif self.llm_anthropic is not None:
             llm = self.llm_anthropic
+        elif self.llm_gemini is not None:
+            llm = self.llm_gemini
+        elif self.llm_groq is not None:
+            llm = self.llm_groq
         else:
             raise ValueError("No LLM available for querying.")
 
