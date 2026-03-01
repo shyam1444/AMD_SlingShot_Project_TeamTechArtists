@@ -92,8 +92,8 @@ def raptor_settings():
     
     selected_embedding_model = st.radio(
                 "Select the embedding model you want to use",
-                ('text-embedding-3-small', 'text-embedding-3-large'),
-                help="Embedding model that will be used for embedding clusters when building the RAPTOR tree and calling the RAPTOR Retriever.",
+                ('models/text-embedding-004',),
+                help="Embedding model that will be used for embedding clusters when building the RAPTOR tree and calling the RAPTOR Retriever. (Gemini-optimized)",
                 
                 on_change=lambda: st.session_state["llm_selection"].update(
                     {"selected_embedding_model": st.session_state["temp_selected_embedding_model"]}
@@ -229,6 +229,9 @@ if st.session_state['connected']:
     
     col1, col2 = st.columns([3, 1])
 
+    if "google_api_key" not in st.session_state:
+        st.session_state["google_api_key"] = os.getenv("GOOGLE_API_KEY") or ""
+        
     if(st.session_state["llm_selection"]["selected_model"] == "GPT"):
         # Initialize key early
         st.session_state["openai_api_key"] = get_openai_key()
@@ -249,24 +252,19 @@ if st.session_state['connected']:
         with st.expander("Settings | Model Selection", expanded=False):
             st.radio(
                 "Select the LLM you want to use to power EduBot🤖",
-                options=["GPT", "mistral:7b", "gemma:7b", "llama3:8b", "Claude 3 Opus", "Claude 3 Sonnet", "Claude 3 Haiku"],
+                options=["Gemini 1.5 Pro", "Gemini 2.0 Flash", "mistral:7b", "gemma:7b", "llama3:8b", "Claude 3 Opus", "Claude 3 Sonnet", "Claude 3 Haiku"],
                 on_change=lambda: st.session_state["llm_selection"].update(
                     {"selected_model": st.session_state["temp_selected_model"]}
                 ),
                 help="",
                 key="temp_selected_model",
             )
-            if(st.session_state["llm_selection"]["selected_model"] == "GPT"):
-                st.checkbox("Load OpenAI API key from environment", key="use_openai_env", help="Check this option if you want the key to be loaded from the environment. You need to add the `OPENAI_API_KEY` key to the `.env` file.")
-
-                selected_gpt = st.radio(
-                    "Select the GPT model you want to use",
-                    ('gpt-4o', 'gpt-4', 'gpt-3.5-turbo'),
-                    on_change=lambda: st.session_state["llm_selection"].update(
-                        {"selected_gpt": st.session_state["temp_selected_gpt"]}
-                    ),
-                    key="temp_selected_gpt",
-                )
+            if "Gemini" in st.session_state["llm_selection"]["selected_model"]:
+                google_key = st.text_input("Google AI API Key", type="password", value=st.session_state["google_api_key"], help="Get your Gemini API key from Google AI Studio")
+                if google_key:
+                    st.session_state["google_api_key"] = google_key
+                    os.environ["GOOGLE_API_KEY"] = google_key
+                st.info("Powered by Google Gemini 🚀")
 
                 
             elif(st.session_state["llm_selection"]["selected_model"] == "Mistral"):

@@ -3,6 +3,9 @@ from modules.sqlrag_module import get_tables
 from llama_index.llms.openai import OpenAI
 from llama_index.llms.ollama import Ollama
 from llama_index.llms.anthropic import Anthropic
+from llama_index.llms.gemini import Gemini
+import os
+from llama_index.llms.gemini import Gemini
 
 def read_prompt_file(file_path):
     try:
@@ -28,9 +31,9 @@ DEFAULT_RAPTOR_QUERY_TOOL_DESCRIPTION = read_prompt_file("./prompts/default/DEFA
 DEFUALT_SQL_RAG_QUERY_TOOL_DESCRIPTION = read_prompt_file("./prompts/default/DEFAULT_SQL_RAG_QUERY_TOOL_DESCRIPTION.txt")
 DEFAULT_WEB_SCRAPER_QUERY_TOOL_DESCRIPTION = read_prompt_file("./prompts/default/DEFAULT_WEB_SCRAPER_QUERY_TOOL_DESCRIPTION.txt")
 
-DEFAULT_SELECTED_MODEL = "GPT"
+DEFAULT_SELECTED_MODEL = "Gemini 1.5 Pro"
 DEFAULT_SELECTED_GPT = "gpt-4o"
-DEFAULT_SELECTED_EMBEDDING_MODEL = "text-embedding-3-small"
+DEFAULT_SELECTED_EMBEDDING_MODEL = "models/text-embedding-004"
 
 def initialize_settings():
     """
@@ -86,7 +89,28 @@ def get_llm():
         initialize_settings()
         print("***Initialized settings!***")
     
-    if st.session_state["llm_selection"]["selected_model"] == "GPT":
+    # Use Gemini 1.5 Pro as the primary default
+    if st.session_state["llm_selection"]["selected_model"] == "Gemini 1.5 Pro":
+        try:
+            return Gemini(
+                model="models/gemini-1.5-pro", 
+                api_key=os.getenv("GOOGLE_API_KEY") or st.session_state.get("google_api_key")
+            )
+        except Exception as e:
+            print(f"Error initializing Gemini Pro: {e}")
+            raise ValueError("Failed to initialize Gemini 1.5 Pro.")
+
+    elif st.session_state["llm_selection"]["selected_model"] == "Gemini 2.0 Flash":
+        try:
+            return Gemini(
+                model="models/gemini-2.0-flash", 
+                api_key=os.getenv("GOOGLE_API_KEY") or st.session_state.get("google_api_key")
+            )
+        except Exception as e:
+            print(f"Error initializing Gemini Flash: {e}")
+            raise ValueError("Failed to initialize Gemini 2.0 Flash.")
+            
+    elif st.session_state["llm_selection"]["selected_model"] == "GPT":
         return OpenAI(model=st.session_state["llm_selection"]["selected_gpt"], temperature=0.1, api_key=st.session_state["openai_api_key"])
     
     # https://ollama.com/library/mistral:7b
@@ -136,4 +160,19 @@ def get_llm():
         except ValueError as e:
             print(f"Model 'claude-3-haiku-20240307' is not recognized: {e}")
             raise ValueError("Invalid model 'claude-3-haiku-20240307' for Anthropic.")
+            
+    # https://docs.llamaindex.ai/en/stable/examples/llm/gemini/
+    elif st.session_state["llm_selection"]["selected_model"] == "Gemini 1.5 Pro":
+        try:
+            return Gemini(model="models/gemini-1.5-pro", api_key=os.getenv("GOOGLE_API_KEY") or st.session_state.get("google_api_key"))
+        except Exception as e:
+            print(f"Error initializing Gemini Pro: {e}")
+            raise ValueError("Failed to initialize Gemini 1.5 Pro.")
+
+    elif st.session_state["llm_selection"]["selected_model"] == "Gemini 1.5 Flash":
+        try:
+            return Gemini(model="models/gemini-1.5-flash", api_key=os.getenv("GOOGLE_API_KEY") or st.session_state.get("google_api_key"))
+        except Exception as e:
+            print(f"Error initializing Gemini Flash: {e}")
+            raise ValueError("Failed to initialize Gemini 1.5 Flash.")
     

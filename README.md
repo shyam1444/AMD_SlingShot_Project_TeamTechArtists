@@ -16,8 +16,8 @@
 
 EduBot orchestrates three specialized RAG modules to provide the best possible answers:
 
-1.  **RAPTOR Module**: Uses Recursive Abstractive Processing for Tree-Organized Retrieval. It clusters and summarizes your documents at multiple levels of abstraction, allowing for both detailed and high-level queries.
-2.  **SQL-RAG Module**: A text-to-SQL engine that queries structured academic data (SQLite), perfect for questions about grades, points, or student lists.
+1.  **SQL-RAG Module**: A text-to-SQL engine that queries structured academic data (SQLite), perfect for questions about grades, points, or student lists.
+2.  **raptor_module.py**: This module, built specifically for EduBot, contains the [llamaindex implementation of RAPTOR](https://github.com/run-llama/llama_index/tree/main/llama-index-packs/llama-index-packs-raptor), which includes RAPTOR Pack and RAPTOR Retrieval. RAPTOR Pack is responsible for embedding, clustering, and summarizing text chunks to create the RAPTOR tree, while RAPTOR Retrieval is responsible for retrieving relevant information from the RAPTOR tree based on the user's query. This implementation was further upgraded to support multi-document retrieval and reloading of the RAPTOR tree for performance and cost efficiency. Currently, this RAPTOR module utilizes **Google Gemini text embedding models** (`models/text-embedding-004`) for embedding text chunks. However, it can be easily extended to support other text embedding models.
 3.  **Web-Scraper Module**: Retrieves the latest news directly from the University of Pula's informatics portal.
 
 ### Intelligent Routing 🤔
@@ -70,3 +70,6 @@ EduBot uses an `LLMSingleSelector` to automatically analyze your question and pi
 - **LLMs**: OpenAI (GPT-4o), Anthropic (Claude 3), Ollama (Local)
 - **Database**: SQLite
 - **Technique**: RAPTOR (Recursive Tree Retrieval)
+
+## License
+MIT License - see the [LICENSE](LICENSE) file for details.
