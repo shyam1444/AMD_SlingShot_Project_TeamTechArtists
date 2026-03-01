@@ -10,6 +10,7 @@ from llama_index.packs.raptor import RaptorPack
 from llama_index.packs.raptor import RaptorRetriever
 from llama_index.vector_stores.chroma import ChromaVectorStore
 from llama_index.embeddings.openai import OpenAIEmbedding
+from openai_key import get_openai_key
 
 from llama_index.core import SimpleDirectoryReader
 from llama_index.core.query_engine import RetrieverQueryEngine
@@ -84,7 +85,10 @@ class RAPTOR:
             self.logger.info("Creating RaptorPack and building raptor tree...")
             raptor_pack = RaptorPack(
                 self.documents,
-                embed_model=OpenAIEmbedding(model=EMBEDDING_MODEL),  # used for embedding clusters, using OpenAI always
+                embed_model=OpenAIEmbedding(
+                    model=EMBEDDING_MODEL, 
+                    api_key=st.session_state["openai_api_key"]
+                ),  # used for embedding clusters, using OpenAI always
                 llm=get_llm(), 
                 vector_store=self.vector_store,
                 similarity_top_k=SIMILARITY_TOP_K,
@@ -101,7 +105,10 @@ class RAPTOR:
             self.logger.info("Setting up RaptorRetriever")
             return RaptorRetriever(
                 [],
-                embed_model=OpenAIEmbedding(model=EMBEDDING_MODEL),  # used for embedding clusters, using OpenAI always
+                embed_model=OpenAIEmbedding(
+                    model=EMBEDDING_MODEL, 
+                    api_key=st.session_state["openai_api_key"]
+                ),  # used for embedding clusters, using OpenAI always
                 llm=get_llm(),
                 vector_store=self.vector_store,
                 similarity_top_k=SIMILARITY_TOP_K,

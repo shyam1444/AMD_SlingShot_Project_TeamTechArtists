@@ -230,10 +230,10 @@ def insert_pjs_points(rows):
 class SQLQueryEngine(CustomQueryEngine):
     """Custom query engine for SQL queries."""
 
-    llm_openai: OpenAI | None
-    llm_ollama: Ollama | None
-    llm_anthropic: Anthropic | None
-    prompt: PromptTemplate
+    llm_openai: OpenAI | None = None
+    llm_ollama: Ollama | None = None
+    llm_anthropic: Anthropic | None = None
+    prompt: PromptTemplate = None
 
     def custom_query(self, query_str: str):
         if self.llm_openai is not None:
@@ -258,11 +258,11 @@ class SQLQueryEngine(CustomQueryEngine):
         
         st.session_state["generated_query.text"] = query_normalized
         
-        #answer_prompt = f"Answer the user question: {query_str} based on the result from the database query: {result}. Answer in Croatian."
+        #answer_prompt = f"Answer the user question: {query_str} based on the result from the database query: {result}. Answer in English."
         #answer = llm.complete(answer_prompt)
         
         return str(result)
-        return str(answer)
+        #return str(answer)
 
 
 def remove_sql_markdown(input_string: str) -> str:

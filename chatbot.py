@@ -20,23 +20,23 @@ load_dotenv()
 def render_chatbot():
     llm_settings = get_llm()
     if "messages" not in st.session_state:
-        st.session_state["messages"] = [{"role": "assistant", "content": "Tu sam! Kako ti mogu pomoći?🤖"}]
+        st.session_state["messages"] = [{"role": "assistant", "content": "I'm here! How can I help you?🤖"}]
 
     for msg in st.session_state.messages:
         st.chat_message(msg["role"]).write(msg["content"])
 
-    if prompt := st.chat_input("Postavi mi pitanje ovdje..."):
+    if prompt := st.chat_input("Ask me a question here..."):
         st.session_state.messages.append({"role": "user", "content": prompt})
         st.chat_message("user").write(prompt)
 
-        with st.spinner("Razmišljam..." if st.session_state.debug_mode else "..."):
+        with st.spinner("Thinking..." if st.session_state.debug_mode else "..."):
             
             if st.session_state.debug_mode:
                 
                 if st.session_state['llm_selection']['selected_model'] == "GPT":
-                    st.warning(f"Koristim LLM: {st.session_state['llm_selection']['selected_gpt']}🧠")
+                    st.warning(f"Using LLM: {st.session_state['llm_selection']['selected_gpt']}🧠")
                 else:
-                    st.warning(f"Koristim LLM: {st.session_state['llm_selection']['selected_model']}🧠")
+                    st.warning(f"Using LLM: {st.session_state['llm_selection']['selected_model']}🧠")
             
             try:
                 # caching
@@ -46,7 +46,7 @@ def render_chatbot():
                     # RAPTOR RAG MODULE
                     velociraptor = get_raptor(files=get_files(), force_rebuild=False)
             except Exception as e:
-                st.error(f"Greška [RAPTOR]: {e}")
+                st.error(f"Error [RAPTOR]: {e}")
                 return
 
             try:
@@ -70,7 +70,7 @@ def render_chatbot():
                     raise ValueError("Unsupported LLM type")
 
             except Exception as e:
-                st.error(f"Greška [SQL-RAG]: {e}")
+                st.error(f"Error [SQL-RAG]: {e}")
                 return
             
             # WEB SCRAPER MODULE
@@ -86,11 +86,11 @@ def render_chatbot():
 
             if st.session_state["user_context_included"]:
                 if st.session_state.debug_mode:
-                    st.info(f"Uključujem podatke o studentu kao kontekst: Godina studija: {st.session_state['user_info']['study_year']}, Poznavanje programiranja: {st.session_state['user_info']['programming_knowledge']}/10")
+                    st.info(f"Including student context: Year: {st.session_state['user_info']['study_year']}, Programming level: {st.session_state['user_info']['programming_knowledge']}/10")
       
             if st.session_state["use_full_conversation"]:
                 if st.session_state.debug_mode:
-                    st.info("Koristim cijeli razgovor kao kontekst")
+                    st.info("Using entire conversation as context")
                 conversation = ""
                 for msg in st.session_state.messages:
                     conversation += f"{msg['role'].upper()}: {msg['content']}\n"
@@ -99,17 +99,17 @@ def render_chatbot():
                 response, intent = intent_recognition(conversation, velociraptor, sql_query_engine, web_scraper_engine)
             else:
                 if st.session_state.debug_mode:
-                    st.info("Koristim samo zadnji upit")
+                    st.info("Using only the latest query as context")
 
                 response, intent = intent_recognition(prompt, velociraptor, sql_query_engine, web_scraper_engine)
 
 
             selected_intent = get_intent_description(intent)
             if st.session_state.debug_mode:
-                st.success(f"Odabrao sam: {selected_intent} ✅")
+                st.success(f"I chose: {selected_intent} ✅")
             
             if st.session_state.debug_mode and selected_intent == "web_scraper_tool":
-                st.info(f"Čitam najnovijih {st.session_state['web_scraper_settings']['max_number_of_posts']} objava s weba🌐🎓")
+                st.info(f"Reading the latest {st.session_state['web_scraper_settings']['max_number_of_posts']} web posts🌐🎓")
             
             if st.session_state.debug_mode and selected_intent == "sql_rag_tool":
                 st.code(st.session_state["generated_query.text"], language="sql")      
@@ -118,16 +118,22 @@ def render_chatbot():
                     st.session_state.messages.append({"role": "assistant", "content": str(response)})
                     st.chat_message("assistant").write(str(response))
             except Exception as e:
-                st.error(f"Greška: {e}")
+                st.error(f"Error: {e}")
             return
 
 UPLOAD_DIR = "uploaded_files"
 STATE_FILE = "file_state.csv"
 
 def get_files():
-    df = pd.read_csv(STATE_FILE)
+    if os.path.exists(STATE_FILE):
+        df = pd.read_csv(STATE_FILE)
+        if "Naziv datoteke" in df.columns:
+            df = df.rename(columns={"Naziv datoteke": "File Name"})
+    else:
+        df = pd.DataFrame(columns=["File Name", "is_used"])
+        
     used_files_df = df[df['is_used'] == True]
-    used_files = used_files_df['Naziv datoteke'].tolist()
+    used_files = used_files_df['File Name'].tolist()
     full_paths = [os.path.join(UPLOAD_DIR, file) for file in used_files]
     print("full_paths", full_paths)
     return full_paths

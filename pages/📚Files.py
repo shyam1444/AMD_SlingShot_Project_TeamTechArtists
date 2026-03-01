@@ -33,10 +33,7 @@ def save_uploaded_file(uploaded_file):
         update_state_file(uploaded_file.name, False)
 
 def update_state_file(file_name, is_used):
-    if os.path.exists(STATE_FILE):
-        df = pd.read_csv(STATE_FILE)
-    else:
-        df = pd.DataFrame(columns=["File Name", "is_used"])
+    df = load_state_file()
 
     if file_name not in df["File Name"].values:
         new_row = pd.DataFrame({"File Name": [file_name], "is_used": [is_used]})
@@ -49,7 +46,10 @@ def update_state_file(file_name, is_used):
 
 def load_state_file():
     if os.path.exists(STATE_FILE):
-        return pd.read_csv(STATE_FILE)
+        df = pd.read_csv(STATE_FILE)
+        if "Naziv datoteke" in df.columns:
+            df = df.rename(columns={"Naziv datoteke": "File Name"})
+        return df
     else:
         return pd.DataFrame(columns=["File Name", "is_used"])
 
@@ -57,6 +57,7 @@ def list_uploaded_files():
     files = load_state_file()
     if files.empty:
         st.write("Empty! 😔")
+        return files
     else:
         edited_df = st.data_editor(data=files,
                                    num_rows="dynamic",
@@ -84,7 +85,7 @@ def on_files_changed():
 def save_state_changes(edited_df):
     edited_df.to_csv(STATE_FILE, index=False)
 
-if st.session_state['connected']:
+if st.session_state.get('connected'):
     initialize_settings()
 
     st.title("📚Files")

@@ -125,7 +125,7 @@ def intent_recognition(user_prompt: str, velociraptor: RAPTOR, sql_engine, web_s
         print("WEB SCRAPER INTENT")
         tailored_response = get_llm().complete(
             f"***Instructions for answering the user query:***\n"
-            f"Always make sure to answer in Croatian language.\n"
+            f"Always make sure to answer in English language.\n"
             f"Your task is to present the user with the latest news from the website. Here are the news:\n"  
             f""""
                 <NEWS START>
@@ -139,7 +139,7 @@ def intent_recognition(user_prompt: str, velociraptor: RAPTOR, sql_engine, web_s
         print("SQL RAG INTENT")
         tailored_response = get_llm().complete(
             f"***Instructions for answering the user query:***\n"
-            f"Always make sure to answer in Croatian language.\n"
+            f"Always make sure to answer in English language.\n"
             f"Based on user query and result SQL query result. Answer the user question directly to user.\n"
             f"User has asked the following question:\n"
             f"<LATEST USER QUERY>\n"
@@ -160,7 +160,7 @@ def intent_recognition(user_prompt: str, velociraptor: RAPTOR, sql_engine, web_s
             print("RAPTOR INTENT | ONLY LAST USER QUERY | USER CONTEXT INCLUDED")
             tailored_response = get_llm().complete(
                 f"***Instructions for answering the user query:***\n"
-                f"Always make sure to answer in Croatian language, but do not translate the code snippets nor IT terms.\n"
+                f"Always make sure to answer in English language, but do not translate the code snippets nor IT terms.\n"
                 f"You are a good professor and know how to explain things well to students of different levels. Student is asking you the following question:\n"
                 f"<LATEST USER QUERY>\n"
                 f"{user_prompt} \n"
@@ -186,7 +186,7 @@ def intent_recognition(user_prompt: str, velociraptor: RAPTOR, sql_engine, web_s
             print("RAPTOR INTENT | ONLY LAST USER QUERY | NO USER CONTEXT")
             tailored_response = get_llm().complete(
                 f"***Instructions for answering the user query:***\n"
-                f"Always make sure to answer in Croatian language, but do not translate the code snippets nor IT terms.\n"
+                f"Always make sure to answer in English language, but do not translate the code snippets nor IT terms.\n"
                 f"You are a good professor and know how to explain things well to students of different levels. Student is asking you the following question:\n"
                 f"<LATEST USER QUERY>\n"
                 f"{user_prompt} \n"
@@ -206,7 +206,7 @@ def intent_recognition(user_prompt: str, velociraptor: RAPTOR, sql_engine, web_s
             print("RAPTOR INTENT | FULL CONVERSATION | USER CONTEXT INCLUDED")
             tailored_response = get_llm().complete(
                 f"***Instructions for answering the user query:***\n"
-                f"Always make sure to answer in Croatian language, but do not translate the code snippets nor IT terms.\n"
+                f"Always make sure to answer in English language, but do not translate the code snippets nor IT terms.\n"
                 f"You are a good professor and know how to explain things well to students of different levels. For context, here is full conversation with you so far:\n"
                 f"{user_prompt}"
                 f"\n Take the whole context and answer the student's latest question indicated under **LATEST USER QUERY**.\n"
@@ -230,7 +230,7 @@ def intent_recognition(user_prompt: str, velociraptor: RAPTOR, sql_engine, web_s
             print("RAPTOR INTENT | FULL CONVERSATION | NO USER CONTEXT")
             tailored_response = get_llm().complete(
                 f"***Instructions for answering the user query:***\n"
-                f"Always make sure to answer in Croatian language, but do not translate the code snippets nor IT terms.\n"
+                f"Always make sure to answer in English language, but do not translate the code snippets nor IT terms.\n"
                 f"You are a good professor and know how to explain things well to students of different levels. For context, here is full conversation with you so far:\n"
                 f"{user_prompt}"
                 f"\n Take the whole context and answer the student's latest question indicated under **LATEST USER QUERY**.\n"
@@ -262,11 +262,11 @@ def get_intent_description(intent: ToolMetadata) -> str:
 
 def stud_year_to_num(stud_year: str) -> int:
     mapping = {
-        "1. prijediplomski": 1,
-        "2. prijediplomski": 2,
-        "3. prijediplomski": 3,
-        "1. diplomski": 4,
-        "2. diplomski": 5
+        "1st Undergraduate": 1,
+        "2nd Undergraduate": 2,
+        "3rd Undergraduate": 3,
+        "1st Graduate": 4,
+        "2nd Graduate": 5
     }
     
     return mapping.get(stud_year, None)

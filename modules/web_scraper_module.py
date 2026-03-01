@@ -10,9 +10,9 @@ from llama_index.llms.openai import OpenAI
 class WebScraperQueryEngine(CustomQueryEngine):
     """Custom query engine for web scraping."""
     
-    llm_openai: OpenAI | None
-    llm_ollama: Ollama | None
-    llm_anthropic: Anthropic | None
+    llm_openai: OpenAI | None = None
+    llm_ollama: Ollama | None = None
+    llm_anthropic: Anthropic | None = None
 
     # web scraper
     def fetch_articles(self):

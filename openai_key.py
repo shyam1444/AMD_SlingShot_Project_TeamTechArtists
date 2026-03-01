@@ -9,20 +9,23 @@ def get_openai_key():
     if 'openai_api_key' not in st.session_state:
         st.session_state.openai_api_key = ""
         
+    # Check if we should load from environment (default to True)
     if st.session_state.use_openai_env:
-        load_dotenv()
+        load_dotenv(override=True)
         openai_api_key = os.getenv('OPENAI_API_KEY')
         if not openai_api_key:
-            st.error("Greška: OpenAI API ključ nije postavljen u okruženju.")
-            st.write("> Molim te postavi svoj OpenAI API ključ u .env datoteku ili unesi ključ ručno.")
+            st.error("Error: OpenAI API key is not set in the environment.")
+            st.write("> Please set your OpenAI API key in the .env file or enter the key manually.")
             st.stop()
         else:
+            # Clean the key: strip quotes and whitespace
+            openai_api_key = openai_api_key.strip().strip("'").strip('"')
             st.session_state.openai_api_key = openai_api_key
     else:
-        openai_api_key = st.text_input("OpenAI API ključ", type="password", value=st.session_state.openai_api_key)
+        openai_api_key = st.text_input("OpenAI API key", type="password", value=st.session_state.openai_api_key)
         if not openai_api_key:
-            st.write("> Ipak, prije nego nastaviš, molim unesi svoj OpenAI API ključ. Ako ga nemaš, možeš ga dobiti na [OpenAI](https://platform.openai.com/signup).")
-            st.error("Greška: Nemam OpenAI API ključ.")
+            st.write("> However, before you continue, please enter your OpenAI API key. If you don't have one, you can get it at [OpenAI](https://platform.openai.com/signup).")
+            st.error("Error: I do not have the OpenAI API key.")
             st.stop()
         else:
             st.session_state.openai_api_key = openai_api_key

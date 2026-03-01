@@ -15,27 +15,18 @@ from modules.sqlrag_module import create_users_table, get_engine, upsert_user, g
 st.set_page_config(
     page_title="EduBot",
     page_icon="🤖",
-    menu_items={
-        'Get Help': 'https://lukablaskovic.github.io/',
-        'Report a bug': "https://github.com/lukablaskovic/edu_bot/issues"
-    }
 )
 
 st.title('🤖🎓EduBot')
 
 st.sidebar.title('🤖🎓EduBot')
-st.sidebar.markdown("**Chatbot za personalizaciju nastavnih materijala**")
+st.sidebar.markdown("**Chatbot for personalizing teaching materials**")
 
 st.sidebar.markdown(
-    "EduBot🤖🎓 je chatbot za studente i nastavnike Fakulteta informatike u Puli. Koristi velike jezične modele (LLM) i moderne RAG tehnike za dohaćanje relevantnih informacija i generiranje odgovora.\n\n"
-    "EduBot može odgovarati na pitanja iz dokumenata pohranjenih u bazi znanja (📚Datoteke). Korisnik može dodavati, brisati i definirati koje datoteke će se koristiti za obogaćivanje znanja EduBota.\n\n"
-    "Korisnik može pohraniti informacije o sebi (👤Korisnički profil) kako bi EduBot prilagodio svoje odgovore, npr. prema korisnikovom znanju iz programiranja.\n\n"
-    "EduBot također može dohvaćati podatke iz baze podataka i web stranice Sveučilišta u Puli."
+    "EduBot🤖🎓 is a chatbot for students and teachers at the Faculty of Informatics in Pula. It uses Large Language Models (LLMs) and modern RAG techniques to retrieve relevant information and generate answers.\n\n"
+    "EduBot can answer questions from documents stored in the knowledge base (📚Files). The user can add, delete, and define which files will be used to enrich EduBot's knowledge.\n\n"
+    "The user can store information about themselves (👤User Profile) so that EduBot can adapt its answers, e.g., according to the user's programming knowledge.\n\n"
 )
-
-st.sidebar.write("Autor: [Luka Blašković](https://github.com/lukablaskovic)")
-
-st.sidebar.write("Source kôd dostupan [ovdje](https://github.com/lukablaskovic/edu_bot).")
 
 
 authenticator = Authenticate(
@@ -82,16 +73,16 @@ def raptor_settings():
     st.radio(
         "RAPTOR Retriever Mode",
         options=["collapsed", "tree_traversal",],
-        help="Odaberi način pretraživanja klastera u RAPTOR-u. 'collapsed' pristup postavlja sve čvorove na istu razinu i evaluira sličnost čvorova simultano. 'tree_traversal' pristup koristi stablo za pretraživanje klastera i evaluira sličnost čvorova po razini stabla.",
+        help="Choose how to search clusters in RAPTOR. The 'collapsed' approach places all nodes on the same level and evaluates node similarity simultaneously. The 'tree_traversal' approach uses a tree to search clusters and evaluates node similarity by tree level.",
         on_change=lambda: st.session_state["intent_agent_settings"].update(
             {"retriever_mode": st.session_state["temp_retriever_mode"]}
         ),
         key="temp_retriever_mode"
     )
-    st.number_input("Unesi top-k", 
+    st.number_input("Enter top-k", 
                     min_value=1, 
                     max_value=10,
-                    help="Odaberi broj najrelevantnijih klastera koje će RAPTOR koristiti za pretraživanje.",  
+                    help="Select the number of most relevant clusters RAPTOR will use for search.",  
                     key="temp_similarity_top_k",
                     value=st.session_state["intent_agent_settings"]["similarity_top_k"],
                     on_change=lambda: st.session_state["intent_agent_settings"].update(
@@ -100,9 +91,9 @@ def raptor_settings():
     )
     
     selected_embedding_model = st.radio(
-                "Odaberi embedding model koji želiš koristiti",
+                "Select the embedding model you want to use",
                 ('text-embedding-3-small', 'text-embedding-3-large'),
-                help="Embedding model koji će se koristiti za embedding klastera prilikom izrade RAPTOR stabla i pozivanja RAPTOR Retriever-a.",
+                help="Embedding model that will be used for embedding clusters when building the RAPTOR tree and calling the RAPTOR Retriever.",
                 
                 on_change=lambda: st.session_state["llm_selection"].update(
                     {"selected_embedding_model": st.session_state["temp_selected_embedding_model"]}
@@ -111,7 +102,7 @@ def raptor_settings():
             )
 
 def sql_rag_settings():
-    st.write("Označi tablice iz baze podataka koje će se koristiti za SQL-RAG")
+    st.write("Check the database tables that will be used for SQL-RAG")
     
     # Tables which will be used for SQL-RAG        
     tables = get_tables()
@@ -130,7 +121,7 @@ def web_scraper_settings():
     
     
     slider_value = st.slider(
-        "Odaberi maksimalni broj najnovijih objava koje želiš da proučim sa stranica Sveučilišta/Fakulteta",
+        "Select the maximum number of the latest posts you want me to study from the University/Faculty pages",
         min_value=1, 
         max_value=100,
         value=st.session_state["web_scraper_settings"]["max_number_of_posts"],
@@ -141,19 +132,18 @@ def web_scraper_settings():
     )
     
     selected_web_url = st.radio(
-                "Odaberi stranicu koju želiš da proučim",
-                ('https://www.unipu.hr/novosti', 'https://fipu.unipu.hr/fipu/novosti'),
-                help="Odaberi stranicu sastavnice Sveučilišta u Puli koju želiš da proučim.",
-                
-                on_change=lambda: st.session_state["web_scraper_settings"].update(
-                    {"selected_web_url": st.session_state["temp_selected_web_url"]}
-                ),
-                key="temp_selected_web_url",
-            )
+        label="Select News Source",
+        options=["https://www.elsevier.com/products/journals"],
+        help="Select the page of the University of Pula component you want me to study.",
+        on_change=lambda: st.session_state["web_scraper_settings"].update(
+            {"selected_web_url": st.session_state["temp_selected_web_url"]}
+        ),
+        key="temp_selected_web_url",
+    )
 
 def intent_recognition_settings():
-    st.checkbox("Koristi cijeli razgovor kao kontekst", key="use_full_conversation", value=False)
-    st.checkbox("Koristi podatke o korisniku kao kontekst", key="user_context_included", value=True)
+    st.checkbox("Use whole conversation as context", key="use_full_conversation", value=False)
+    st.checkbox("Use user data as context", key="user_context_included", value=True)
     st.text_area(
         label="Direct LLM Prompt",
         value=st.session_state["intent_agent_settings"]["direct_llm_prompt"],
@@ -163,7 +153,7 @@ def intent_recognition_settings():
         key="temp_direct_llm_prompt", 
         height=200
     )
-    st.button(label="Spremi", key="btn_save_direct_llm_settings", type="primary", on_click=lambda: save_prompt("./prompts/DIRECT_LLM_PROMPT.txt", st.session_state["temp_direct_llm_prompt"]))
+    st.button(label="Save", key="btn_save_direct_llm_settings", type="primary", on_click=lambda: save_prompt("./prompts/DIRECT_LLM_PROMPT.txt", st.session_state["temp_direct_llm_prompt"]))
 
     st.text_area(
         label="Query Engine Description",
@@ -174,11 +164,11 @@ def intent_recognition_settings():
         key="temp_llm_query_tool_description", 
         height=200
     )
-    st.button(label="Spremi", key="btn_save_query_engine_desc", type="primary", on_click=lambda: save_prompt("./prompts/LLM_QUERY_TOOL_DESCRIPTION.txt", st.session_state["temp_llm_query_tool_description"]))
+    st.button(label="Save", key="btn_save_query_engine_desc", type="primary", on_click=lambda: save_prompt("./prompts/LLM_QUERY_TOOL_DESCRIPTION.txt", st.session_state["temp_llm_query_tool_description"]))
 
     st.divider()
     
-    use_raptor = st.checkbox("Koristi RAPTOR Engine", 
+    use_raptor = st.checkbox("Use RAPTOR Engine", 
                                 value= st.session_state["intent_agent_settings"]["use_raptor"],
                                 on_change=lambda: st.session_state["intent_agent_settings"].update(
                                     {"use_raptor": st.session_state["temp_use_raptor"]}
@@ -194,10 +184,10 @@ def intent_recognition_settings():
             key="temp_raptor_query_tool_description",
             height=200
         )
-    st.button(label="Spremi", key="btn_save_raptor_settings", type="primary", on_click=lambda: save_prompt("./prompts/RAPTOR_QUERY_TOOL_DESCRIPTION.txt", st.session_state["temp_raptor_query_tool_description"]))
+    st.button(label="Save", key="btn_save_raptor_settings", type="primary", on_click=lambda: save_prompt("./prompts/RAPTOR_QUERY_TOOL_DESCRIPTION.txt", st.session_state["temp_raptor_query_tool_description"]))
     st.divider()
     
-    use_sql_rag = st.checkbox("Koristi SQL-RAG Engine", 
+    use_sql_rag = st.checkbox("Use SQL-RAG Engine", 
                                 value= st.session_state["intent_agent_settings"]["use_sql_rag"],
                                 on_change=lambda: st.session_state["intent_agent_settings"].update(
                                     {"use_sql_rag": st.session_state["temp_use_sql_rag"]}
@@ -214,9 +204,9 @@ def intent_recognition_settings():
             height=200
         )
         
-    st.button(label="Spremi", key="btn_save_sqlrag_settings", type="primary", on_click=lambda: save_prompt("./prompts/SQL_RAG_QUERY_TOOL_DESCRIPTION.txt", st.session_state["temp_sql_rag_query_tool_description"]))
+    st.button(label="Save", key="btn_save_sqlrag_settings", type="primary", on_click=lambda: save_prompt("./prompts/SQL_RAG_QUERY_TOOL_DESCRIPTION.txt", st.session_state["temp_sql_rag_query_tool_description"]))
 
-    use_web_scraper = st.checkbox("Koristi Web Scraper Engine", 
+    use_web_scraper = st.checkbox("Use Web Scraper Engine", 
                                 value= st.session_state["intent_agent_settings"]["use_web_scraper"],
                                 on_change=lambda: st.session_state["intent_agent_settings"].update(
                                     {"use_web_scraper": st.session_state["temp_use_web_scraper"]}
@@ -233,29 +223,32 @@ def intent_recognition_settings():
             height=200
         )
         
-    st.button(label="Spremi", key="btn_save_webscraper_settings", type="primary", on_click=lambda: save_prompt("./prompts/WEB_SCRAPER_QUERY_TOOL_DESCRIPTION.txt", st.session_state["temp_web_scraper_query_tool_description"]))
+    st.button(label="Save", key="btn_save_webscraper_settings", type="primary", on_click=lambda: save_prompt("./prompts/WEB_SCRAPER_QUERY_TOOL_DESCRIPTION.txt", st.session_state["temp_web_scraper_query_tool_description"]))
     
 if st.session_state['connected']:
     
     col1, col2 = st.columns([3, 1])
 
+    if(st.session_state["llm_selection"]["selected_model"] == "GPT"):
+        # Initialize key early
+        st.session_state["openai_api_key"] = get_openai_key()
+        
     with col1:
-        st.write(f"Hej, {st.session_state['user_info'].get('name')}👋🏻")
-        st.write("Uspješna prijava! Huuray! 🎉")
-        st.write("""Tu sam da ti olakšam studentsku avanturu na [Fakultetu informatike](https://fipu.unipu.hr/). Bilo da imaš pitanja o studiju, predmetima, profesorima, projektima, ili nečemu drugome, tu sam da ti pomognem.""")
-        st.write("Ako ti nije jasan silabus nekog kolegija, tražiš objašnjenje teorije iz skripte, imaš problem s programiranjem, ili te zanima koliko ti bodova nedostaje za prolaz iz nekog kolegija, slobodno me pitaj!😊")
+        st.write(f"Hey, {st.session_state['user_info'].get('name')}👋🏻")
+        st.write("Login successful! Hurray! 🎉")
+        st.write("If you don't understand the syllabus of a course, are looking for an explanation of theory from a script or have a problem with programming, feel free to ask me!😊")
 
     with col2:
-        debug_mode_on = st.toggle("Ispod haube", key="debug_mode", value=True)
+        debug_mode_on = st.toggle("Under the hood", key="debug_mode", value=True)
 
     with st.sidebar:
-        if st.button('Odjava'):
+        if st.button('Logout'):
             authenticator.logout()
         container = st.sidebar.container(border=True)
         
-        with st.expander("Postavke | Odabir modela", expanded=False):
+        with st.expander("Settings | Model Selection", expanded=False):
             st.radio(
-                "Odaberi LLM koji želiš koristiti za pogon EduBota🤖",
+                "Select the LLM you want to use to power EduBot🤖",
                 options=["GPT", "mistral:7b", "gemma:7b", "llama3:8b", "Claude 3 Opus", "Claude 3 Sonnet", "Claude 3 Haiku"],
                 on_change=lambda: st.session_state["llm_selection"].update(
                     {"selected_model": st.session_state["temp_selected_model"]}
@@ -264,11 +257,10 @@ if st.session_state['connected']:
                 key="temp_selected_model",
             )
             if(st.session_state["llm_selection"]["selected_model"] == "GPT"):
-                st.session_state["openai_api_key"] = get_openai_key()
-                st.checkbox("Učitaj OpenAI API ključ iz okruženja", key="use_openai_env", help="Chekiraj ovu opciju ako želiš da se ključ učita iz okruženja. Potrebno je u `.env` datoteku dodati `OPENAI_API_KEY` ključ.")
+                st.checkbox("Load OpenAI API key from environment", key="use_openai_env", help="Check this option if you want the key to be loaded from the environment. You need to add the `OPENAI_API_KEY` key to the `.env` file.")
 
                 selected_gpt = st.radio(
-                    "Odaberi GPT model koji želiš koristiti",
+                    "Select the GPT model you want to use",
                     ('gpt-4o', 'gpt-4', 'gpt-3.5-turbo'),
                     on_change=lambda: st.session_state["llm_selection"].update(
                         {"selected_gpt": st.session_state["temp_selected_gpt"]}
@@ -278,30 +270,30 @@ if st.session_state['connected']:
 
                 
             elif(st.session_state["llm_selection"]["selected_model"] == "Mistral"):
-                st.success("Odabran model Mistral7B - lokalni deployment preko Ollame🦙")
+                st.success("Mistral7B model selected - local deployment via Ollama🦙")
             elif(st.session_state["llm_selection"]["selected_model"] == "Gemma"):
-                st.success("Odabran model Gemma - lokalni deployment preko Ollame🦙")
+                st.success("Gemma model selected - local deployment via Ollama🦙")
                 
-        with st.expander("Postavke | Intent Recognition", expanded=False):
+        with st.expander("Settings | Intent Recognition", expanded=False):
             intent_recognition_settings()
 
-        with st.expander("Postavke | RAPTOR", expanded=False):
+        with st.expander("Settings | RAPTOR", expanded=False):
             raptor_settings()
             
-        with st.expander("Postavke | SQL-RAG", expanded=False):
+        with st.expander("Settings | SQL-RAG", expanded=False):
             sql_rag_settings()
         
-        with st.expander("Postavke | Web Scraper", expanded=False):
+        with st.expander("Settings | Web Scraper", expanded=False):
             web_scraper_settings()
             
     render_chatbot()
 
     # Reset conversation.
-    if(st.button("Resetiraj razgovor")):
-        st.session_state["messages"] = [{"role": "assistant", "content": "Tu sam! Kako ti mogu pomoći?🤖"}]
+    if(st.button("Reset Conversation")):
+        st.session_state["messages"] = [{"role": "assistant", "content": "I'm here! How can I help you?🤖"}]
         st.rerun()
 
 else:
-    st.write("Bok👋🏻 Kako bi mogao koristiti EduBot, moraš se prijaviti.")
+    st.write("Hi👋🏻 To use EduBot, you must log in.")
     
     authenticator.login(justify_content="start")

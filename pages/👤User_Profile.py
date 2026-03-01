@@ -25,12 +25,13 @@ authenticator.check_authentification()
 
 create_users_table()
 
-email = st.session_state['user_info'].get('email')
+email = st.session_state.get('user_info', {}).get('email')
 user_details = get_user_by_email(email) 
 
-if st.session_state['connected']:
+if st.session_state.get('connected'):
     st.title('👤User Profile')
-    st.markdown(f'Hey {st.session_state["user_info"].get("name")} 👋')
+    user_name = st.session_state.get("user_info", {}).get("name", "Student")
+    st.markdown(f'Hey {user_name} 👋')
     st.markdown('Here you can update some of your personal information.')
 
     study_year = user_details.get('study_year') if user_details else "1st Undergraduate"
@@ -38,8 +39,8 @@ if st.session_state['connected']:
     programming_knowledge = user_details.get('programming_knowledge') if user_details else 0
 
     with st.form(key="profile_form"):
-        name = st.text_input("Full Name", value=st.session_state['user_info'].get('name'), disabled=True)
-        email = st.text_input("Email", value=st.session_state['user_info'].get('email'), disabled=True)
+        name = st.text_input("Full Name", value=st.session_state.get('user_info', {}).get('name', ''), disabled=True)
+        email = st.text_input("Email", value=st.session_state.get('user_info', {}).get('email', ''), disabled=True)
         study_year = st.selectbox("Year of Study", ["1st Undergraduate", "2nd Undergraduate", "3rd Undergraduate", "1st Graduate", "2nd Graduate"], index=["1st Undergraduate", "2nd Undergraduate", "3rd Undergraduate", "1st Graduate", "2nd Graduate"].index(study_year), key="study_year")
         about_me = st.text_area("About Me", value=about_me, key="about_me", help="Describe what kind of student you are and how you learn best.")
         programming_knowledge = st.slider("Programming Knowledge",
