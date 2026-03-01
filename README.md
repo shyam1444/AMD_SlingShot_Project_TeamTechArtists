@@ -70,6 +70,3 @@ EduBot uses an `LLMSingleSelector` to automatically analyze your question and pi
 - **LLMs**: OpenAI (GPT-4o), Anthropic (Claude 3), Ollama (Local)
 - **Database**: SQLite
 - **Technique**: RAPTOR (Recursive Tree Retrieval)
-
-## License
-MIT License - see the [LICENSE](LICENSE) file for details.
