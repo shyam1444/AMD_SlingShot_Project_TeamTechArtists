@@ -92,6 +92,8 @@ EduBot uses an `LLMSingleSelector` to automatically analyze your question and pi
 - **Database**: SQLite
 - **Technique**: RAPTOR (Recursive Tree Retrieval)
 
+##By Team TechArtists: Shyam, Karthik and Pratham
+
 
 <img width="1919" height="865" alt="image" src="https://github.com/user-attachments/assets/54946e9e-22aa-4931-bd61-062f418c8536" />
 
