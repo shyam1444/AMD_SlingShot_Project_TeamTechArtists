@@ -32,3 +32,20 @@ def get_openai_key():
     
     os.environ['OPENAI_API_KEY'] = st.session_state.openai_api_key
     return st.session_state.openai_api_key
+
+def get_google_key():
+    if 'google_api_key' not in st.session_state:
+        st.session_state.google_api_key = ""
+        
+    # If session state is empty, try loading from .env
+    if not st.session_state.google_api_key:
+        load_dotenv(override=True)
+        google_api_key = os.getenv('GOOGLE_API_KEY')
+        if google_api_key:
+            st.session_state.google_api_key = google_api_key.strip().strip("'").strip('"')
+    
+    # Always ensure the environment variable matches the sanitized session state
+    if st.session_state.google_api_key:
+        os.environ['GOOGLE_API_KEY'] = st.session_state.google_api_key
+        
+    return st.session_state.google_api_key

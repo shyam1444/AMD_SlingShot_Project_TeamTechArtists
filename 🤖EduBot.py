@@ -8,6 +8,10 @@ from chatbot import render_chatbot
 from modules.sqlrag_module import get_tables 
 from settings import initialize_settings, save_prompt
 from modules.sqlrag_module import create_users_table, get_engine, upsert_user, get_user_by_email, create_pjs_points_table
+from openai_key import get_google_key
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # import logging
 # logging.basicConfig(level=logging.DEBUG)
@@ -42,6 +46,7 @@ authenticator.check_authentification()
 
 if st.session_state['connected']:
     initialize_settings()
+    get_google_key()
     
     #st.session_state["llm_selection"]["selected_model"]
     #st.session_state["llm_selection"]["selected_gpt"]

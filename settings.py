@@ -5,7 +5,7 @@ from llama_index.llms.ollama import Ollama
 from llama_index.llms.anthropic import Anthropic
 from llama_index.llms.gemini import Gemini
 import os
-from llama_index.llms.gemini import Gemini
+from openai_key import get_google_key
 
 def read_prompt_file(file_path):
     try:
@@ -94,21 +94,21 @@ def get_llm():
         try:
             return Gemini(
                 model="models/gemini-1.5-pro", 
-                api_key=os.getenv("GOOGLE_API_KEY") or st.session_state.get("google_api_key")
+                api_key=get_google_key()
             )
         except Exception as e:
             print(f"Error initializing Gemini Pro: {e}")
-            raise ValueError("Failed to initialize Gemini 1.5 Pro.")
+            raise ValueError(f"Failed to initialize Gemini 1.5 Pro: {e}")
 
     elif st.session_state["llm_selection"]["selected_model"] == "Gemini 2.0 Flash":
         try:
             return Gemini(
                 model="models/gemini-2.0-flash", 
-                api_key=os.getenv("GOOGLE_API_KEY") or st.session_state.get("google_api_key")
+                api_key=get_google_key()
             )
         except Exception as e:
             print(f"Error initializing Gemini Flash: {e}")
-            raise ValueError("Failed to initialize Gemini 2.0 Flash.")
+            raise ValueError(f"Failed to initialize Gemini 2.0 Flash: {e}")
             
     elif st.session_state["llm_selection"]["selected_model"] == "GPT":
         return OpenAI(model=st.session_state["llm_selection"]["selected_gpt"], temperature=0.1, api_key=st.session_state["openai_api_key"])
@@ -160,19 +160,4 @@ def get_llm():
         except ValueError as e:
             print(f"Model 'claude-3-haiku-20240307' is not recognized: {e}")
             raise ValueError("Invalid model 'claude-3-haiku-20240307' for Anthropic.")
-            
-    # https://docs.llamaindex.ai/en/stable/examples/llm/gemini/
-    elif st.session_state["llm_selection"]["selected_model"] == "Gemini 1.5 Pro":
-        try:
-            return Gemini(model="models/gemini-1.5-pro", api_key=os.getenv("GOOGLE_API_KEY") or st.session_state.get("google_api_key"))
-        except Exception as e:
-            print(f"Error initializing Gemini Pro: {e}")
-            raise ValueError("Failed to initialize Gemini 1.5 Pro.")
-
-    elif st.session_state["llm_selection"]["selected_model"] == "Gemini 1.5 Flash":
-        try:
-            return Gemini(model="models/gemini-1.5-flash", api_key=os.getenv("GOOGLE_API_KEY") or st.session_state.get("google_api_key"))
-        except Exception as e:
-            print(f"Error initializing Gemini Flash: {e}")
-            raise ValueError("Failed to initialize Gemini 1.5 Flash.")
     

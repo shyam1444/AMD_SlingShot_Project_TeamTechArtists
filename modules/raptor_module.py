@@ -10,8 +10,7 @@ from llama_index.packs.raptor import RaptorPack
 from llama_index.packs.raptor import RaptorRetriever
 from llama_index.vector_stores.chroma import ChromaVectorStore
 from llama_index.embeddings.gemini import GeminiEmbedding
-from openai_key import get_openai_key
-from openai_key import get_openai_key
+from openai_key import get_openai_key, get_google_key
 
 from llama_index.core import SimpleDirectoryReader
 from llama_index.core.query_engine import RetrieverQueryEngine
@@ -88,7 +87,7 @@ class RAPTOR:
                 self.documents,
                 embed_model=GeminiEmbedding(
                     model_name=EMBEDDING_MODEL, 
-                    api_key=os.getenv("GOOGLE_API_KEY") or st.session_state.get("google_api_key")
+                    api_key=get_google_key()
                 ),  # used for embedding clusters, using Gemini always
                 llm=get_llm(), 
                 vector_store=self.vector_store,
@@ -108,7 +107,7 @@ class RAPTOR:
                 [],
                 embed_model=GeminiEmbedding(
                     model_name=EMBEDDING_MODEL, 
-                    api_key=os.getenv("GOOGLE_API_KEY") or st.session_state.get("google_api_key")
+                    api_key=get_google_key()
                 ),  # used for embedding clusters, using Gemini always
                 llm=get_llm(),
                 vector_store=self.vector_store,
