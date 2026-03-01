@@ -257,7 +257,7 @@ if st.session_state['connected']:
         with st.expander("Settings | Model Selection", expanded=False):
             st.radio(
                 "Select the LLM you want to use to power EduBot🤖",
-                options=["Gemini 1.5 Pro", "Gemini 2.0 Flash", "mistral:7b", "gemma:7b", "llama3:8b", "Claude 3 Opus", "Claude 3 Sonnet", "Claude 3 Haiku"],
+                options=["Gemini 2.0 Flash", "Gemini 2.5 Flash", "Gemini 2.5 Pro", "mistral:7b", "gemma:7b", "llama3:8b", "Claude 3 Opus", "Claude 3 Sonnet", "Claude 3 Haiku"],
                 on_change=lambda: st.session_state["llm_selection"].update(
                     {"selected_model": st.session_state["temp_selected_model"]}
                 ),

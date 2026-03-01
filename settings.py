@@ -31,7 +31,7 @@ DEFAULT_RAPTOR_QUERY_TOOL_DESCRIPTION = read_prompt_file("./prompts/default/DEFA
 DEFUALT_SQL_RAG_QUERY_TOOL_DESCRIPTION = read_prompt_file("./prompts/default/DEFAULT_SQL_RAG_QUERY_TOOL_DESCRIPTION.txt")
 DEFAULT_WEB_SCRAPER_QUERY_TOOL_DESCRIPTION = read_prompt_file("./prompts/default/DEFAULT_WEB_SCRAPER_QUERY_TOOL_DESCRIPTION.txt")
 
-DEFAULT_SELECTED_MODEL = "Gemini 1.5 Pro"
+DEFAULT_SELECTED_MODEL = "Gemini 2.0 Flash"
 DEFAULT_SELECTED_GPT = "gpt-4o"
 DEFAULT_SELECTED_EMBEDDING_MODEL = "models/text-embedding-004"
 
@@ -89,18 +89,8 @@ def get_llm():
         initialize_settings()
         print("***Initialized settings!***")
     
-    # Use Gemini 1.5 Pro as the primary default
-    if st.session_state["llm_selection"]["selected_model"] == "Gemini 1.5 Pro":
-        try:
-            return Gemini(
-                model="models/gemini-1.5-pro", 
-                api_key=get_google_key()
-            )
-        except Exception as e:
-            print(f"Error initializing Gemini Pro: {e}")
-            raise ValueError(f"Failed to initialize Gemini 1.5 Pro: {e}")
-
-    elif st.session_state["llm_selection"]["selected_model"] == "Gemini 2.0 Flash":
+    # Use Gemini 2.0 Flash as the primary default
+    if st.session_state["llm_selection"]["selected_model"] == "Gemini 2.0 Flash":
         try:
             return Gemini(
                 model="models/gemini-2.0-flash", 
@@ -109,6 +99,26 @@ def get_llm():
         except Exception as e:
             print(f"Error initializing Gemini Flash: {e}")
             raise ValueError(f"Failed to initialize Gemini 2.0 Flash: {e}")
+
+    elif st.session_state["llm_selection"]["selected_model"] == "Gemini 2.5 Flash":
+        try:
+            return Gemini(
+                model="models/gemini-2.5-flash", 
+                api_key=get_google_key()
+            )
+        except Exception as e:
+            print(f"Error initializing Gemini Flash: {e}")
+            raise ValueError(f"Failed to initialize Gemini 2.5 Flash: {e}")
+            
+    elif st.session_state["llm_selection"]["selected_model"] == "Gemini 2.5 Pro":
+        try:
+            return Gemini(
+                model="models/gemini-2.5-pro", 
+                api_key=get_google_key()
+            )
+        except Exception as e:
+            print(f"Error initializing Gemini Pro: {e}")
+            raise ValueError(f"Failed to initialize Gemini 2.5 Pro: {e}")
             
     elif st.session_state["llm_selection"]["selected_model"] == "GPT":
         return OpenAI(model=st.session_state["llm_selection"]["selected_gpt"], temperature=0.1, api_key=st.session_state["openai_api_key"])
