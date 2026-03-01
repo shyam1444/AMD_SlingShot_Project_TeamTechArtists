@@ -2,8 +2,6 @@
 
 **EduBot** is a powerful RAG (Retrieval-Augmented Generation) chatbot that utilizes state-of-the-art LLMs to provide a seamless and interactive learning experience. It is designed to help students and teachers explore complex concepts, analyze course materials, and interact with academic data.
 
-This app was originally developed for a [Master's thesis](https://repozitorij.unipu.hr/islandora/object/unipu:9219) at the [Faculty of Informatics Pula](https://fipu.unipu.hr/fipu/en), Croatia, and has been recently enhanced with full English localization and robust technical fixes.
-
 ## Features 🌟
 
 - **Full English Localization**: All UI elements, AI prompts, and internal logic are now fully translated to English for global accessibility.
