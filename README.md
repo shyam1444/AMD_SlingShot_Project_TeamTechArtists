@@ -69,7 +69,7 @@ Once the model is selected, all modules (RAPTOR, SQL-RAG, Web-scraper) will util
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/lukablaskovic/edu_bot.git
+git clone https://github.com/shyam1444/EduBot.git
 ```
 
 2. Create a virtual environment (`python 3.11`) (conda is recommended, but you can also use venv)
