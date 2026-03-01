@@ -81,11 +81,11 @@ EduBot uses an `LLMSingleSelector` to automatically analyze your question and pi
 - **Database**: SQLite
 - **Technique**: RAPTOR (Recursive Tree Retrieval)
 
-- <img width="1919" height="867" alt="image" src="https://github.com/user-attachments/assets/41b84c62-372f-48fa-b094-e20fc71250d2" />
 
-- <img width="1919" height="865" alt="image" src="https://github.com/user-attachments/assets/54946e9e-22aa-4931-bd61-062f418c8536" />
+<img width="1919" height="865" alt="image" src="https://github.com/user-attachments/assets/54946e9e-22aa-4931-bd61-062f418c8536" />
 
-- <img width="1919" height="869" alt="image" src="https://github.com/user-attachments/assets/4be50990-d2fd-495e-ae63-09c33cd70d4c" />
+
+<img width="1919" height="869" alt="image" src="https://github.com/user-attachments/assets/4be50990-d2fd-495e-ae63-09c33cd70d4c" />
 
 
 
