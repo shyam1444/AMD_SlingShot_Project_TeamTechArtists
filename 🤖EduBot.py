@@ -27,7 +27,7 @@ st.sidebar.title('🤖🎓EduBot')
 st.sidebar.markdown("**Chatbot for personalizing teaching materials**")
 
 st.sidebar.markdown(
-    "EduBot🤖🎓 is a chatbot for students and teachers at the Faculty of Informatics in Pula. It uses Large Language Models (LLMs) and modern RAG techniques to retrieve relevant information and generate answers.\n\n"
+    "EduBot🤖🎓 is a chatbot for students and teachers. It uses Large Language Models (LLMs) and modern RAG techniques to retrieve relevant information and generate answers.\n\n"
     "EduBot can answer questions from documents stored in the knowledge base (📚Files). The user can add, delete, and define which files will be used to enrich EduBot's knowledge.\n\n"
     "The user can store information about themselves (👤User Profile) so that EduBot can adapt its answers, e.g., according to the user's programming knowledge.\n\n"
 )
@@ -96,16 +96,16 @@ def raptor_settings():
                     )
     )
     
-    selected_embedding_model = st.radio(
-                "Select the embedding model you want to use",
-                ('models/text-embedding-004',),
-                help="Embedding model that will be used for embedding clusters when building the RAPTOR tree and calling the RAPTOR Retriever. (Gemini-optimized)",
-                
-                on_change=lambda: st.session_state["llm_selection"].update(
-                    {"selected_embedding_model": st.session_state["temp_selected_embedding_model"]}
-                ),
-                key="temp_selected_embedding_model",
-            )
+    st.radio(
+        "Select the embedding model you want to use",
+        options=['BAAI/bge-small-en-v1.5', 'models/text-embedding-004'],
+        help="Local BGE is fast and requires no API key. Gemini-optimized is better for search but requires Google API key.",
+        on_change=lambda: st.session_state["llm_selection"].update(
+            {"selected_embedding_model": st.session_state["temp_selected_embedding_model"]}
+        ),
+        key="temp_selected_embedding_model",
+        index=['BAAI/bge-small-en-v1.5', 'models/text-embedding-004'].index(st.session_state["llm_selection"]["selected_embedding_model"]) if st.session_state["llm_selection"]["selected_embedding_model"] in ['BAAI/bge-small-en-v1.5', 'models/text-embedding-004'] else 0
+    )
 
 def sql_rag_settings():
     st.write("Check the database tables that will be used for SQL-RAG")

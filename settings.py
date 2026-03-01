@@ -5,6 +5,8 @@ from llama_index.llms.ollama import Ollama
 from llama_index.llms.anthropic import Anthropic
 from llama_index.llms.gemini import Gemini
 from llama_index.llms.groq import Groq
+from llama_index.embeddings.gemini import GeminiEmbedding
+from llama_index.embeddings.huggingface import HuggingFaceEmbedding
 import os
 from openai_key import get_google_key, get_groq_key
 
@@ -34,7 +36,7 @@ DEFAULT_WEB_SCRAPER_QUERY_TOOL_DESCRIPTION = read_prompt_file("./prompts/default
 
 DEFAULT_SELECTED_MODEL = "Groq Llama 3.3 70B"
 DEFAULT_SELECTED_GPT = "gpt-4o"
-DEFAULT_SELECTED_EMBEDDING_MODEL = "models/text-embedding-004"
+DEFAULT_SELECTED_EMBEDDING_MODEL = "BAAI/bge-small-en-v1.5"
 
 def initialize_settings():
     """
@@ -202,4 +204,32 @@ def get_llm():
         except ValueError as e:
             print(f"Model 'claude-3-haiku-20240307' is not recognized: {e}")
             raise ValueError("Invalid model 'claude-3-haiku-20240307' for Anthropic.")
+
+def get_embedding_model():
+    """
+    Get Embedding settings.
+    """
+    selected_embedding = st.session_state["llm_selection"].get("selected_embedding_model", DEFAULT_SELECTED_EMBEDDING_MODEL)
+    
+    # If using Google Gemini embeddings
+    if selected_embedding == "models/text-embedding-004":
+        # Check if we have a key
+        google_key = get_google_key()
+        if google_key:
+            try:
+                return GeminiEmbedding(model_name=selected_embedding, api_key=google_key)
+            except Exception as e:
+                print(f"Failed to initialize Gemini Embedding, falling back to local: {e}")
+        
+        # Fallback to local if no key or failed
+        print("No Google API Key found for embeddings, falling back to local BGE model.")
+        return HuggingFaceEmbedding(model_name="BAAI/bge-small-en-v1.5")
+    
+    # Default to local HuggingFace embedding
+    else:
+        try:
+            return HuggingFaceEmbedding(model_name=selected_embedding)
+        except Exception as e:
+            print(f"Failed to initialize HuggingFace Embedding '{selected_embedding}': {e}")
+            return HuggingFaceEmbedding(model_name="BAAI/bge-small-en-v1.5")
     
